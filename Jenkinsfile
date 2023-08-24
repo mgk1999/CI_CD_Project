@@ -52,7 +52,7 @@
                                 -Dsonar.projectName=vprofile-repo \
                                 -Dsonar.projectVersion=1.0 \
                                 -Dsonar.sources=src/ \
-                                -Dsonar.java.binaries=target/testclasses/com/visualpathit/account/controllerTest/ \
+                                -Dsonar.java.binaries=target \
                                 -Dsonar.junit.reportsPath=target/surefire-reports/ \
                                 -Dsonar.jacoco.reportsPath=target/jacoco.exec \
                                 -Dsonar.java.checkstyle.reportPaths=target/checkstyleresult.xml'''
