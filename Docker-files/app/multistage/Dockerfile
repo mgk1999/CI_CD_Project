@@ -1,7 +1,7 @@
 FROM openjdk:11 AS BUILD_IMAGE
 RUN apt update && apt install maven -y
 RUN git clone https://github.com/LearnAndGrowTogetheer/CI_CD_Project.git
-RUN cd CI_CD_Project && git checkout /cicd-jenkins && mvn install
+RUN cd CI_CD_Project && git checkout cicd-jenkins && mvn install
 
 FROM tomcat:9-jre11
 
