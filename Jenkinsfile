@@ -71,7 +71,7 @@
                 }
             }
 
-            stage(Upload Artifacts) {
+            stage('Upload Artifacts') {
                 steps {
                     nexusArtifactUploader(
                             nexusVersion: 'nexus3',
