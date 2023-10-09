@@ -21,9 +21,9 @@ pipeline {
         NEXUS_LOGIN = 'nexuslogin'
         SONARSERVER = 'sonarserver'
         SONARSCANNER = 'sonarscanner'
-        registryCredentials = 'ecr:ecr.us-east-2:awscreds'
+        registryCredentials = 'ecr:us-east-2:awscreds'
         appRegistry = '943441234686.dkr.ecr.us-east-2.amazonaws.com/vprofileapp'
-        vprofilrRegistry = 'https://943441234686.dkr.ecr.us-east-2.amazonaws.com/vprofileapp'
+        vprofilrRegistry = "https://943441234686.dkr.ecr.us-east-2.amazonaws.com/vprofileapp"
     }
 
     stages {
