@@ -1,3 +1,5 @@
+import org.junit.internal.builders.JUnit3Builder
+
 pipeline{
     agent any
     tools {
@@ -57,6 +59,13 @@ pipeline{
                                 -Dsonar.java.checkstyle.reportPaths=target/checkstyleresult.xml'''
                 }
 
+            }
+        }
+        stage("Quality gate") {
+            steps {
+                timeout(time:1, unit: 'MINUTES') {
+                    waitForQualityGate abortPipeline: true
+                }
             }
         }
     }
