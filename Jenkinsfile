@@ -1,5 +1,3 @@
-import org.junit.internal.builders.JUnit3Builder
-
 pipeline{
     agent any
     tools {
