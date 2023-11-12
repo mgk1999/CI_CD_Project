@@ -75,7 +75,7 @@ pipeline{
                         groupId : 'Mgk',
                         version: "${env.BUILD_ID}-${env.BUILD_TIMESTAMP}",
                         repository: "${RELEASE_REPO}",
-                        crediantialsId: "${NEXUS_LOGIN}",
+                        credentialsId: "${NEXUS_LOGIN}",
                         artifacts: [
                                 [artifactId: 'vproapp',
                                 classifier: "",
