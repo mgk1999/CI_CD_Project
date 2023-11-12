@@ -71,7 +71,7 @@ pipeline{
                 nexusArtifactUploader(
                         nexusVersion: 'nexus3',
                         protocol: 'http',
-                        nexusurl: "${NEXUSIP}:${NEXUSPORT}",
+                        nexusUrl: "${NEXUSIP}:${NEXUSPORT}",
                         groupId : 'Mgk',
                         version: "${env.BUILD_ID}-${env.BUILD_TIMESTAMP}",
                         repository: "${RELEASE_REPO}",
