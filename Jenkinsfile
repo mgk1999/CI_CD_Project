@@ -2,35 +2,28 @@ def COLOR_MAP = [
         'SUCCESS': 'good',
         'FAILURE': 'danger'
 ]
-pipeline {
+pipeline{
     agent any
     tools {
         maven "MAVEN3"
         jdk "OracleJDK8"
     }
-
     environment {
-        SNAP_REPO = 'vprofile-snapshot'
-        NEXUS_USER = 'admin'
-        NEXUS_PASS = 'Pinspire@1234'
-        RELEASE_REPO = 'vprofile-release'
-        CENTRAL_REPO = 'vpro-maven-central'
-        NEXUSIP = '172.31.16.42'
-        NEXUSPORT = '8081'
-        NEXUS_GRP_REPO = 'vpro-maven-group'
-        NEXUS_LOGIN = 'nexuslogin'
-        SONARSERVER = 'sonarserver'
-        SONARSCANNER = 'sonarscanner'
-        registryCredentials = 'ecr:us-east-2:awscreds'
-        appRegistry = '943441234686.dkr.ecr.us-east-2.amazonaws.com/vprofileapp'
-        vprofilrRegistry = "https://943441234686.dkr.ecr.us-east-2.amazonaws.com/vprofileapp"
-        cluster = "vproappstage"
-        service = "vprostagesvc"
+        SNAP_REPO = "vprofile-snapshot"
+        NEXUS_USER = "admin"
+        NEXUS_PASS = "Mgk@1999"
+        RELEASE_REPO = "vprofile-release"
+        CENTRAL_REPO = "vpro-maven-central"
+        NEXUSIP = "172.31.25.51"
+        NEXUSPORT = "8081"
+        NEXUS_GRP_REPO = "vpro-maven-group"
+        NEXUS_LOGIN = "nexuslogin"
+        SONARSERVER = "sonarserver"
+        SONARSCANNER = "Sonarscanner"
     }
-
     stages {
-        stage('Build') {
-            steps {
+        stage('Build'){
+            steps{
                 sh 'mvn -s settings.xml -DskipTests install'
             }
             post {
@@ -39,20 +32,19 @@ pipeline {
                     archiveArtifacts artifacts: '**/*.war'
                 }
             }
-        }
 
-        stage('Test') {
-            steps {
+        }
+        stage('Test'){
+            steps{
                 sh 'mvn test'
             }
         }
-
-        stage('Checkstyle Analysis') {
-            steps {
+        stage('Checkstyle Analysis'){
+            steps{
                 sh 'mvn -s settings.xml checkstyle:checkstyle'
             }
-        }
 
+        }
         stage('Code Analysis With SonarQube') {
             environment {
                 scannerHome = tool "${SONARSCANNER}"
@@ -71,72 +63,39 @@ pipeline {
 
             }
         }
-
-        stage('Quality Gate') {
+        stage("Quality gate") {
             steps {
-                timeout(time: 1, unit: 'MINUTES') {
-                    waitForQualityGate abortPipeline:true
+                timeout(time:1, unit: 'MINUTES') {
+                    waitForQualityGate abortPipeline: true
                 }
             }
         }
-
-        stage('Upload Artifacts') {
-            steps {
+        stage('Upload Artifact'){
+            steps{
                 nexusArtifactUploader(
                         nexusVersion: 'nexus3',
                         protocol: 'http',
                         nexusUrl: "${NEXUSIP}:${NEXUSPORT}",
-                        groupId: 'QA',
+                        groupId : 'Mgk',
                         version: "${env.BUILD_ID}-${env.BUILD_TIMESTAMP}",
                         repository: "${RELEASE_REPO}",
                         credentialsId: "${NEXUS_LOGIN}",
                         artifacts: [
-                                [artifactId: 'vproapp' ,
-                                 classifier: '',
+                                [artifactId: 'vproapp',
+                                 classifier: "",
                                  file: 'target/vprofile-v2.war',
                                  type: 'war']
                         ]
                 )
             }
         }
-
-        stage('Build App Image') {
-            steps {
-                script {
-                    dockerImage = docker.build(appRegistry + ":$BUILD_NUMBER","./Docker-files/app/multistage")
-                }
-            }
-        }
-
-        stage('Upload App Image') {
-            steps {
-                script {
-                    docker.withRegistry(vprofilrRegistry,registryCredentials){
-                        dockerImage.push("$BUILD_NUMBER")
-                        dockerImage.push('latest')
-                    }
-                }
-            }
-        }
-
-        stage('Deploy to ECS Cluster') {
-            steps {
-                    withAWS(credentials: 'awscreds', region: 'us-east-2') {
-                        sh 'aws ecs update-service --cluster ${cluster} --service ${service} --force-new-deployment'
-                    }
-            }
-        }
-
-
-
     }
     post{
         always {
             echo 'Slack Notifications'
-            slackSend channel: ' #jenkin-cicd',
+            slackSend channel: ' #jenkins-cicd',
                     color: COLOR_MAP[currentBuild.currentResult],
                     message: "*${currentBuild.currentResult}:* Job ${env.JOB_NAME} build ${env.BUILD_NUMBER} \n More info at: ${env.BUILD_URL}"
         }
     }
-
 }
